@@ -1,10 +1,11 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, HttpException, HttpStatus, UseInterceptors } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, HttpException, HttpStatus, UseInterceptors, ClassSerializerInterceptor } from '@nestjs/common';
 import { ProduitsService } from './produits.service';
 import { CreateProduitDto } from './dto/create-produit.dto';
 import { UpdateProduitDto } from './dto/update-produit.dto';
 import { TransformInterceptor } from 'src/interceptor/TransformInterceptor';
 
 @Controller('produits')
+@UseInterceptors(ClassSerializerInterceptor)
 @UseInterceptors(TransformInterceptor) // transforme toutes les responses avec statusCode, status et data
 export class ProduitsController {
   constructor(private readonly produitsService: ProduitsService) {}
