@@ -8,7 +8,8 @@ import { join } from 'path';
 import { ConfigModule } from '@nestjs/config';
 
 @Module({
-  imports: [ConfigModule.forRoot(),
+  imports: [ProduitsModule,
+    ConfigModule.forRoot(),
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: process.env.DB_HOST,
@@ -18,8 +19,8 @@ import { ConfigModule } from '@nestjs/config';
       database: process.env.DB_NAME,
       entities: [Produit],
       synchronize: true,
-    }),
-    ProduitsModule
+      logging: false,
+    })
   ],
   controllers: [ProduitsController],
   providers: [ProduitsService],
