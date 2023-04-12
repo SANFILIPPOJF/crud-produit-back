@@ -1,26 +1,60 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { CreateProduitDto } from './dto/create-produit.dto';
 import { UpdateProduitDto } from './dto/update-produit.dto';
+import { Produit } from './entities/produit.entity';
 
 @Injectable()
 export class ProduitsService {
-  create(createProduitDto: CreateProduitDto) {
-    return 'This action adds a new produit';
+  async create(createProduitDto: CreateProduitDto) {
+    try {
+      return await Produit.create({...createProduitDto}).save();
+    } catch (error) {
+      throw new InternalServerErrorException();
+    }
   }
 
-  findAll() {
-    return `This action returns all produits`;
+  async findAll() {
+    try {
+      return await Produit.find();
+    } catch (error) {
+      throw new InternalServerErrorException();
+    }
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} produit`;
+  async findOne(id: number) {
+    try {
+      return await Produit.findOneBy({id});
+    } catch (error) {
+      throw new InternalServerErrorException();
+    }
   }
 
-  update(id: number, updateProduitDto: UpdateProduitDto) {
-    return `This action updates a #${id} produit`;
+  async findByName(name: string) {
+    try {
+      return await Produit.findOneBy({name});
+    } catch (error) {
+      throw new InternalServerErrorException();
+    }
+  }
+  async update(id: number, updateProduitDto: UpdateProduitDto) {
+    try {
+      const produit = await Produit.findOneBy({ id });
+      if (updateProduitDto.name) produit!.name = updateProduitDto.name;
+      if (updateProduitDto.quantity) produit!.quantity = updateProduitDto.quantity;
+      if (updateProduitDto.price) produit!.price = updateProduitDto.price;
+      return await produit!.save();
+    }
+    catch (error) {
+      throw new InternalServerErrorException();
+    }
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} produit`;
+  async remove(id: number) {
+    try {
+      const produit = await Produit.findOneBy({id})
+      return produit!.remove();
+    } catch (error) {
+      throw new InternalServerErrorException();
+    }
   }
 }
